@@ -85,6 +85,48 @@ public class AutoGapLinearLayout extends LinearLayout {
     }
 
     @Override
+    public void removeView(View view) {
+        if (LOG_PRIORITY <= Log.VERBOSE) Log.v(LOG_TAG, "removeView(View)");
+
+        super.removeView(view);
+
+        View gap = findViewWithTag(view);
+        super.removeViewInLayout(gap);
+    }
+
+    @Override
+    public void removeViewAt(int index) {
+        if (LOG_PRIORITY <= Log.VERBOSE) Log.v(LOG_TAG, "removeViewAt(int)");
+
+        if (index < 0) return;
+
+        if (index % 2 == 0) {
+            if (LOG_PRIORITY <= Log.WARN) Log.w(LOG_TAG, "removeViewAt(int) does nothing since indicated a gap index");
+            return;
+        }
+
+        removeView(getChildAt(index));
+    }
+
+    @Override
+    public void removeViews(int start, int count) {
+        if (LOG_PRIORITY <= Log.VERBOSE) Log.v(LOG_TAG, "removeViews(int, int)");
+
+        if (start < 0) return;
+
+        if (start % 2 == 0) {
+            start++;
+            count--;
+        }
+
+        if (count % 2 == 1) count++;
+
+        if (count <= 0) return;
+
+        super.removeViews(start, count);
+    }
+
+    @Override
     protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         if (LOG_PRIORITY <= Log.VERBOSE) Log.v(LOG_TAG, "checkLayoutParams(ViewGroup.LayoutParams)");
         return p instanceof LayoutParams;
