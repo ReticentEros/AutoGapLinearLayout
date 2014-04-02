@@ -3,4 +3,7 @@
     <declare-styleable name="AutoGapLinearLayout">
         <attr name="firstGap" format="float" />
     </declare-styleable>
+    <declare-styleable name="AutoGapLinearLayout_LayoutParams">
+        <attr name="layout_gap" format="float" />
+    </declare-styleable>
 </resources>
