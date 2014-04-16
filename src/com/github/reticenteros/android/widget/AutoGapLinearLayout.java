@@ -127,6 +127,27 @@ public class AutoGapLinearLayout extends LinearLayout {
     }
 
     @Override
+    public void requestLayout() {
+        if (LOG_PRIORITY <= Log.VERBOSE) Log.v(LOG_TAG, "requestLayout()");
+
+        View firstGap = getChildAt(0);
+        if (firstGap != null) setGapLayoutParamsInLayout(firstGap, ((LayoutParams) firstGap.getLayoutParams()).weight);
+
+        int count  = getChildCount();
+
+        for (int i = 1; i < count; i += 2) {
+            View view = getChildAt(i);
+            View gap = findViewWithTag(view);
+
+            if (gap == null) continue;
+
+            setGapLayoutParamsInLayout(gap, ((LayoutParams) view.getLayoutParams()).gap);
+        }
+
+        super.requestLayout();
+    }
+
+    @Override
     protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
         if (LOG_PRIORITY <= Log.VERBOSE) Log.v(LOG_TAG, "checkLayoutParams(ViewGroup.LayoutParams)");
         return p instanceof LayoutParams;
@@ -176,6 +197,19 @@ public class AutoGapLinearLayout extends LinearLayout {
         else if (orientation == VERTICAL) return new LayoutParams(LayoutParams.MATCH_PARENT, 0, weight);
 
         return null;
+    }
+
+    private void setGapLayoutParamsInLayout(View gap, float weight) {
+        if (LOG_PRIORITY <= Log.VERBOSE) Log.v(LOG_TAG, "setGapLayoutParams(float)");
+
+        LayoutParams params = (LayoutParams) gap.getLayoutParams();
+        if (params == null) return;
+
+        int orientation = getOrientation();
+
+        params.width = orientation == HORIZONTAL ? 0 : LayoutParams.MATCH_PARENT;
+        params.height = orientation == HORIZONTAL ? LayoutParams.MATCH_PARENT : 0;
+        params.weight = weight;
     }
 
     /* Nested Classes */
